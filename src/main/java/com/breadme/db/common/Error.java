@@ -7,6 +7,9 @@ public class Error {
     public static final Exception FileNotExistsException = new RuntimeException("file does not exists");
     public static final Exception FileCannotRWException = new RuntimeException("file cannot read or write");
     
+    // dm
+    public static final Exception MemoryTooSmallException = new RuntimeException("memory too small");
+    
     // tm
     public static final Exception BadXidFileException = new RuntimeException("bad xid file");
 }
