@@ -1,12 +1,10 @@
 package com.breadme.db.server.dm.cache;
 
-import com.breadme.db.common.Error;
 import com.breadme.db.server.dm.page.Page;
+import com.breadme.db.server.util.FileUtils;
 import com.breadme.db.server.util.Panic;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
@@ -20,26 +18,10 @@ public interface PageCache {
     void flushPage(Page page);
     
     static PageCacheImpl create(String dir, String filename, long memory) {
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        File file = new File(dir + filename + PageCacheImpl.FILE_SUFFIX);
-        try {
-            if (!file.createNewFile()) {
-                Panic.panic(Error.FileExistsException);
-            }
-        } catch (IOException e) {
-            Panic.panic(e);
-        }
-        
-        if (!file.canRead() || !file.canWrite()) {
-            Panic.panic(Error.FileCannotRWException);
-        }
-
         RandomAccessFile raf = null;
         FileChannel fc = null;
         try {
-            raf = new RandomAccessFile(file, "rw");
+            raf = new RandomAccessFile(FileUtils.create(dir, filename + PageCacheImpl.FILE_SUFFIX), "rw");
             fc = raf.getChannel();
         } catch (FileNotFoundException e) {
             Panic.panic(e);
@@ -49,22 +31,10 @@ public interface PageCache {
     }
     
     static PageCacheImpl open(String dir, String filename, long memory) {
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        File file = new File(dir + filename + PageCacheImpl.FILE_SUFFIX);
-        if (!file.exists()) {
-            Panic.panic(Error.FileNotExistsException);
-        }
-
-        if (!file.canRead() || !file.canWrite()) {
-            Panic.panic(Error.FileCannotRWException);
-        }
-        
         RandomAccessFile raf = null;
         FileChannel fc = null;
         try {
-            raf = new RandomAccessFile(file, "rw");
+            raf = new RandomAccessFile(FileUtils.open(dir, filename + PageCacheImpl.FILE_SUFFIX), "rw");
             fc = raf.getChannel();
         } catch (FileNotFoundException e) {
             Panic.panic(e);

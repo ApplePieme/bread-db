@@ -1,11 +1,9 @@
 package com.breadme.db.server.tm;
 
-import com.breadme.db.common.Error;
+import com.breadme.db.server.util.FileUtils;
 import com.breadme.db.server.util.Panic;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -20,26 +18,10 @@ public interface TransactionManager {
     void close();
     
     static TransactionManagerImpl create(String dir, String filename) {
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        File file = new File(dir + filename + TransactionManagerImpl.FILE_SUFFIX);
-        try {
-            if (!file.createNewFile()) {
-                Panic.panic(Error.FileExistsException);
-            }
-        } catch (IOException e) {
-            Panic.panic(e);
-        }
-        
-        if (!file.canRead() || !file.canWrite()) {
-            Panic.panic(Error.FileCannotRWException);
-        }
-
         RandomAccessFile raf = null;
         FileChannel fc = null;
         try {
-            raf = new RandomAccessFile(file, "rw");
+            raf = new RandomAccessFile(FileUtils.create(dir, filename + TransactionManagerImpl.FILE_SUFFIX), "rw");
             fc = raf.getChannel();
             ByteBuffer buf = ByteBuffer.allocate(TransactionManagerImpl.LEN_XID_HEADER_LENGTH);
             buf.putLong(0L);
@@ -54,22 +36,10 @@ public interface TransactionManager {
     }
     
     static TransactionManagerImpl open(String dir, String filename) {
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        File file = new File(dir + filename + TransactionManagerImpl.FILE_SUFFIX);
-        if (!file.exists()) {
-            Panic.panic(Error.FileNotExistsException);
-        }
-        
-        if (!file.canRead() || !file.canWrite()) {
-            Panic.panic(Error.FileCannotRWException);
-        }
-        
         RandomAccessFile raf = null;
         FileChannel fc = null;
         try {
-            raf = new RandomAccessFile(file, "rw");
+            raf = new RandomAccessFile(FileUtils.open(dir, filename + TransactionManagerImpl.FILE_SUFFIX), "rw");
             fc = raf.getChannel();
         } catch (FileNotFoundException e) {
             Panic.panic(e);
