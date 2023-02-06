@@ -19,8 +19,11 @@ public interface PageCache {
     int getPageNumber();
     void flushPage(Page page);
     
-    static PageCacheImpl create(String path, long memory) {
-        File file = new File(path);
+    static PageCacheImpl create(String dir, String filename, long memory) {
+        if (!dir.endsWith("/")) {
+            dir += "/";
+        }
+        File file = new File(dir + filename + PageCacheImpl.FILE_SUFFIX);
         try {
             if (!file.createNewFile()) {
                 Panic.panic(Error.FileExistsException);
@@ -45,8 +48,11 @@ public interface PageCache {
         return new PageCacheImpl(raf, fc, (int) memory / Page.PAGE_SIZE);
     }
     
-    static PageCacheImpl open(String path, long memory) {
-        File file = new File(path);
+    static PageCacheImpl open(String dir, String filename, long memory) {
+        if (!dir.endsWith("/")) {
+            dir += "/";
+        }
+        File file = new File(dir + filename + PageCacheImpl.FILE_SUFFIX);
         if (!file.exists()) {
             Panic.panic(Error.FileNotExistsException);
         }

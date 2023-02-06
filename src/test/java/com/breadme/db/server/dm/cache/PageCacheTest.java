@@ -19,7 +19,7 @@ public class PageCacheTest {
     
     @Test
     public void pageCacheTest() throws Exception {
-        PageCache pageCache = PageCache.create("page-cache-simple-test0.db", Page.PAGE_SIZE * 50);
+        PageCache pageCache = PageCache.create("./", "page-cache-simple-test0", Page.PAGE_SIZE * 50);
         
         for (int i = 0; i < 100; i++) {
             byte[] data = new byte[Page.PAGE_SIZE];
@@ -31,7 +31,7 @@ public class PageCacheTest {
         }
         pageCache.close();
         
-        pageCache = PageCache.open("page-cache-simple-test0.db", Page.PAGE_SIZE * 50);
+        pageCache = PageCache.open("./", "page-cache-simple-test0", Page.PAGE_SIZE * 50);
         for (int i = 1; i <= 100; i++) {
             Page page = pageCache.getPage(i);
             Assert.assertEquals(page.getData()[0], (byte) i - 1);
@@ -44,7 +44,7 @@ public class PageCacheTest {
     
     @Test
     public void simpleMultiPageCacheTest() {
-        PageCache pageCache = PageCache.create("page-cache-simple-test1.db", Page.PAGE_SIZE * 100);
+        PageCache pageCache = PageCache.create("./", "page-cache-simple-test1", Page.PAGE_SIZE * 100);
         AtomicInteger pageNumGen = new AtomicInteger(0);
 
         for (int i = 0; i < 200; i++) {
@@ -81,7 +81,7 @@ public class PageCacheTest {
     
     @Test
     public void multiPageCacheTest() throws Exception {
-        PageCache pageCache = PageCache.create("page-cache-multi-test.db", Page.PAGE_SIZE * 100);
+        PageCache pageCache = PageCache.create("./", "page-cache-multi-test", Page.PAGE_SIZE * 100);
         PageCache mockPageCache = new MockPageCache();
         Lock lock = new ReentrantLock();
         CountDownLatch latch = new CountDownLatch(30);

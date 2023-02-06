@@ -15,6 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
+    static final String FILE_SUFFIX = ".db";
     private static final int CAPACITY_MIN_LIMIT = 10;
     
     private final RandomAccessFile raf;

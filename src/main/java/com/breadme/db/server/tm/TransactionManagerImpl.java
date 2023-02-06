@@ -12,6 +12,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TransactionManagerImpl implements TransactionManager {
+    static final String FILE_SUFFIX = ".xid";
     static final int LEN_XID_HEADER_LENGTH = 8;
     private static final int XID_FIELD_SIZE = 1;
     private static final byte FIELD_TRAN_ACTIVE = 0;

@@ -19,8 +19,11 @@ public interface TransactionManager {
     boolean isAborted(long xid);
     void close();
     
-    static TransactionManagerImpl create(String path) {
-        File file = new File(path);
+    static TransactionManagerImpl create(String dir, String filename) {
+        if (!dir.endsWith("/")) {
+            dir += "/";
+        }
+        File file = new File(dir + filename + TransactionManagerImpl.FILE_SUFFIX);
         try {
             if (!file.createNewFile()) {
                 Panic.panic(Error.FileExistsException);
@@ -50,8 +53,11 @@ public interface TransactionManager {
         return new TransactionManagerImpl(raf, fc);
     }
     
-    static TransactionManagerImpl open(String path) {
-        File file = new File(path);
+    static TransactionManagerImpl open(String dir, String filename) {
+        if (!dir.endsWith("/")) {
+            dir += "/";
+        }
+        File file = new File(dir + filename + TransactionManagerImpl.FILE_SUFFIX);
         if (!file.exists()) {
             Panic.panic(Error.FileNotExistsException);
         }

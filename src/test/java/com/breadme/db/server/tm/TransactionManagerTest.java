@@ -24,7 +24,7 @@ public class TransactionManagerTest {
     
     @Test
     public void multiThreadTest() {
-        tm = TransactionManager.create("tm.xid");
+        tm = TransactionManager.create("./", "tm");
         transMap = new ConcurrentHashMap<>();
         latch = new CountDownLatch(numWorkers);
         
